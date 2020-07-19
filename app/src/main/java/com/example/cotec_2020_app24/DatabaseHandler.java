@@ -37,6 +37,23 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String COL_9_2 = "Pathology";
     public static final String COL_10_2 = "Patient";
     public static final String COL_11_2 = "Hospital";
+    public static final String TABLE_NAME_3 = "Updated_Patient";
+    public static final String COL_13_1 = "Old_ID";
+    public static final String TABLE_NAME_4 = "Updated_Contact";
+    public static final String COL_12_2 = "Old_ID";
+    public static final String TABLE_NAME_5 = "Patient_Contact";
+    public static final String COL_1_5 = "Patient_ID";
+    public static final String COL_2_5 = "Contact_ID";
+    public static final String COL_3_5 = "Last_visit";
+    public static final String TABLE_NAME_6 = "Patient_Pathology";
+    public static final String COL_1_6 = "Pathology_name";
+    public static final String COL_2_6 = "Patient_ID";
+    public static final String TABLE_NAME_7 = "Contact_Pathology";
+    public static final String COL_1_7 = "Pathology_name";
+    public static final String COL_2_7 = "Contact_ID";
+    public static final String TABLE_NAME_8 = "Patient_Medication";
+    public static final String COL_1_8 = "Medication";
+    public static final String COL_2_8 = "Patient_ID";
     public DatabaseHandler(@Nullable Context context) {
         super(context, DATABASE_NAME, null, 1);
     }
@@ -44,11 +61,23 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + TABLE_NAME_1 + "(ID INTEGER PRIMARY KEY, First_name TEXT, Last_name TEXT, Nationality TEXT, Region TEXT, ICU TEXT, Age INTEGER, Hospitalized TEXT, Medication TEXT, Pathology TEXT, State TEXT, Contacts TEXT)");
         db.execSQL("CREATE TABLE " + TABLE_NAME_2 + "(ID INTEGER PRIMARY KEY, First_name TEXT, Last_name TEXT, Nationality TEXT, Region TEXT, Address TEXT, Email TEXT, Age INTEGER, Pathology TEXT, Patient TEXT, Hospital TEXT)");
+        db.execSQL("CREATE TABLE " + TABLE_NAME_3 + "(ID INTEGER PRIMARY KEY, First_name TEXT, Last_name TEXT, Nationality TEXT, Region TEXT, ICU TEXT, Age INTEGER, Hospitalized TEXT, Medication TEXT, Pathology TEXT, State TEXT, Contacts TEXT, Old_ID INTEGER)");
+        db.execSQL("CREATE TABLE " + TABLE_NAME_4 + "(ID INTEGER PRIMARY KEY, First_name TEXT, Last_name TEXT, Nationality TEXT, Region TEXT, Address TEXT, Email TEXT, Age INTEGER, Pathology TEXT, Patient TEXT, Hospital TEXT, Old_ID INTEGER)");
+        db.execSQL("CREATE TABLE " + TABLE_NAME_5 + "(Patient_ID INTEGER, Contact_ID INTEGER, Last_visit TEXT PRIMARY KEY, FOREIGN KEY (Patiend_ID) REFERENCES TABLE_NAME_1 (ID), FOREIGN KEY (Contact_ID) REFERENCES TABLE_NAME_2 (ID))");
+        db.execSQL("CREATE TABLE " + TABLE_NAME_6 + "(Pathology_name TEXT PRIMARY KEY, Patient_ID INTEGER PRIMARY KEY, FOREIGN KEY (Patient_ID) REFERENCES TABLE_NAME_1 (ID))");
+        db.execSQL("CREATE TABLE " + TABLE_NAME_7 + "(Pathology_name TEXT PRIMARY KEY, Contact_ID INTEGER PRIMARY KEY, FOREIGN KEY (Contact_ID) REFERENCES TABLE_NAME_2 (ID))");
+        db.execSQL("CREATE TABLE " + TABLE_NAME_8 + "(Medication TEXT PRIMARY KEY, Patient_ID INTEGER PRIMARY KEY, FOREIGN KEY (Patient_ID) REFERENCES TABLE_NAME_1 (ID))");
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_1);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_2);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_3);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_4);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_5);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_6);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_7);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_8);
         onCreate(db);
     }
     public boolean insertPatient(String id, String first_name, String last_name, String nationality, String region, String intensiveCare, String age, String hospitalized, String medication, String pathology, String state, String contacts) {
@@ -127,7 +156,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         contentValues.put(COL_9_2, pathology);
         contentValues.put(COL_10_2, patient);
         contentValues.put(COL_11_2, hospital);
-        long result = db.insert(TABLE_NAME_1, null, contentValues);
+        long result = db.insert(TABLE_NAME_2, null, contentValues);
         if (result == -1) {
             return false;
         } else {
